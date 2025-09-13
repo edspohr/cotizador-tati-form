@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cotizador - Tati Mapelli</title>
+    <link rel="icon" href="img/logo.svg" type="image/svg+xml">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F7F7F9;
+        }
+        .font-playfair {
+            font-family: 'Playfair Display', serif;
+        }
+        .form-container, .quote-result-container {
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+        }
+        .product-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .product-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px -5px rgba(236, 72, 153, 0.25);
+        }
+        .product-btn.selected {
+             background-color: #ec4899; /* pink-500 */
+             color: white;
+             box-shadow: 0 10px 20px -5px rgba(236, 72, 153, 0.25);
+        }
+        .form-section {
+            transition: opacity 0.5s ease-in-out, max-height 0.5s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .form-section.active {
+            max-height: 1000px; /* Adjust as needed */
+            opacity: 1;
+        }
+        .form-input {
+            background-color: #f3f4f6;
+            border: 2px solid transparent;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #f9a8d4;
+            box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.2);
+        }
+        /* WhatsApp Button Pulse Animation */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+        .animate-pulse-whatsapp {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8 min-h-screen flex flex-col items-center relative z-10">
+
+        <header class="w-full max-w-5xl flex flex-col items-start text-left md:flex-row md:items-center py-8 mb-4">
+            <img src="img/logo.svg" alt="Logo Tati Mapelli" class="w-28 md:w-32 mb-4 md:mb-0 md:mr-8">
+            <div>
+                <h1 class="font-playfair text-4xl md:text-5xl text-gray-800">Cotizador IA</h1>
+                <p class="text-md text-gray-500 mt-2">Herramientas y accesorios para resultados perfectos en tu repostería.</p>
+            </div>
+        </header>
+
+        <main id="main-content" class="w-full max-w-2xl">
+            <!-- Form Container -->
+            <div id="form-container" class="form-container bg-white rounded-2xl p-8">
+                <!-- Step 1: Product Selection -->
+                <div id="step-1">
+                    <h2 class="font-playfair text-2xl text-center mb-6">¿Qué herramienta quieres diseñar?</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button class="product-btn bg-white border border-gray-200 hover:border-pink-400 p-4 rounded-lg font-semibold" onclick="selectProduct('molde')">Moldes</button>
+                        <button class="product-btn bg-white border border-gray-200 hover:border-pink-400 p-4 rounded-lg font-semibold" onclick="selectProduct('panquequera')">Panquequeras</button>
+                        <button class="product-btn bg-white border border-gray-200 hover:border-pink-400 p-4 rounded-lg font-semibold" onclick="selectProduct('varilla_placa')">Varillas y Placas</button>
+                        <button class="product-btn bg-white border border-gray-200 hover:border-pink-400 p-4 rounded-lg font-semibold" onclick="selectProduct('otro')">Otro Diseño</button>
+                    </div>
+                </div>
+
+                <!-- Form sections for each product -->
+                <div id="form-sections" class="mt-8 space-y-6">
+                    <!-- MOLDE FORM -->
+                    <div id="molde-form" class="form-section">
+                        <h3 class="font-playfair text-xl mb-4 text-pink-500">Detalles del Molde de Aluminio</h3>
+                        <div class="grid grid-cols-3 gap-4 mb-4">
+                            <div><label class="block text-sm font-medium text-gray-500 mb-1">Largo (cm)</label><input type="number" id="molde-largo" class="form-input w-full rounded-lg p-2"></div>
+                            <div><label class="block text-sm font-medium text-gray-500 mb-1">Ancho (cm)</label><input type="number" id="molde-ancho" class="form-input w-full rounded-lg p-2"></div>
+                            <div><label class="block text-sm font-medium text-gray-500 mb-1">Alto (cm)</label><input type="number" id="molde-alto" class="form-input w-full rounded-lg p-2"></div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                           <div><label class="block text-sm font-medium text-gray-500 mb-1">Espesor</label><select id="molde-espesor" class="form-input w-full rounded-lg p-2"><option value="1">1mm (Estándar)</option><option value="1.5">1.5mm (Reforzado)</option></select></div>
+                           <div><label class="block text-sm font-medium text-gray-500 mb-1">Tipo</label><select id="molde-tipo" class="form-input w-full rounded-lg p-2"><option value="desmontable">Desmontable</option><option value="fijo">Fijo</option></select></div>
+                        </div>
+                        <div><label class="block text-sm font-medium text-gray-500 mb-1">Divisiones Internas (Opcional)</label><input type="number" id="molde-divisiones" class="form-input w-full rounded-lg p-2" placeholder="0"></div>
+                    </div>
+                    <!-- PANQUEQUERA FORM -->
+                    <div id="panquequera-form" class="form-section">
+                        <h3 class="font-playfair text-xl mb-4 text-pink-500">Detalles de la Panquequera de Acrílico</h3>
+                        <div><label class="block text-sm font-medium text-gray-500 mb-1">Forma</label><select id="panquequera-forma" class="form-input w-full rounded-lg p-2 mb-4" onchange="togglePanquequeraInputs()"><option value="redonda">Redonda</option><option value="rectangular">Rectangular</option></select></div>
+                        <div id="panquequera-redonda-inputs">
+                            <label class="block text-sm font-medium text-gray-500 mb-1">Diámetro (cm)</label><input type="number" id="panquequera-diametro" class="form-input w-full rounded-lg p-2">
+                        </div>
+                        <div id="panquequera-rectangular-inputs" class="hidden">
+                             <div class="grid grid-cols-2 gap-4"><input type="number" id="panquequera-largo" class="form-input w-full rounded-lg p-2" placeholder="Largo (cm)"><input type="number" id="panquequera-ancho" class="form-input w-full rounded-lg p-2" placeholder="Ancho (cm)"></div>
+                        </div>
+                        <div class="mt-4"><label class="block text-sm font-medium text-gray-500 mb-1">Espesor</label><select id="panquequera-espesor" class="form-input w-full rounded-lg p-2"><option value="2">2mm (Estándar)</option><option value="3">3mm (Grueso)</option></select></div>
+                    </div>
+                    <!-- VARILLA/PLACA FORM -->
+                    <div id="varilla_placa-form" class="form-section">
+                        <h3 class="font-playfair text-xl mb-4 text-pink-500">Detalles de Varilla o Placa de Acrílico</h3>
+                        <div><label class="block text-sm font-medium text-gray-500 mb-1">Tipo de Producto</label><select id="vp-tipo" class="form-input w-full rounded-lg p-2 mb-4"><option value="varilla">Varilla</option><option value="placa">Placa</option></select></div>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                           <div><label class="block text-sm font-medium text-gray-500 mb-1">Largo (cm)</label><input type="number" id="vp-largo" class="form-input w-full rounded-lg p-2"></div>
+                           <div><label class="block text-sm font-medium text-gray-500 mb-1">Ancho (cm)</label><input type="number" id="vp-ancho" class="form-input w-full rounded-lg p-2"></div>
+                        </div>
+                        <div><label class="block text-sm font-medium text-gray-500 mb-1">Espesor</label><select id="vp-espesor" class="form-input w-full rounded-lg p-2"><option value="2">2mm (Estándar)</option><option value="3">3mm (Grueso)</option></select></div>
+                    </div>
+                     <!-- OTRO FORM -->
+                    <div id="otro-form" class="form-section">
+                         <h3 class="font-playfair text-xl mb-4 text-pink-500">Diseño Personalizado (Experimental)</h3>
+                         <div class="grid grid-cols-2 gap-4 mb-4">
+                           <div><label class="block text-sm font-medium text-gray-500 mb-1">Material</label><select id="otro-material" class="form-input w-full rounded-lg p-2"><option value="acrilico">Acrílico</option><option value="aluminio">Aluminio</option></select></div>
+                            <div><label class="block text-sm font-medium text-gray-500 mb-1">Espesor (mm)</label><input type="number" id="otro-espesor" class="form-input w-full rounded-lg p-2" placeholder="ej: 3"></div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                           <div><label class="block text-sm font-medium text-gray-500 mb-1">Largo (cm)</label><input type="number" id="otro-largo" class="form-input w-full rounded-lg p-2"></div>
+                           <div><label class="block text-sm font-medium text-gray-500 mb-1">Ancho (cm)</label><input type="number" id="otro-ancho" class="form-input w-full rounded-lg p-2"></div>
+                        </div>
+                        <div><label class="block text-sm font-medium text-gray-500 mb-1">Complejidad del Diseño</label><select id="otro-complejidad" class="form-input w-full rounded-lg p-2"><option value="1">Simple (Placas, cortes rectos)</option><option value="1.5">Media (Cajas, letras, curvas)</option><option value="2">Compleja (Formas intrincadas)</option></select></div>
+                    </div>
+                </div>
+
+                <!-- Calculate Button -->
+                <div id="calculate-btn-container" class="mt-8 text-center hidden">
+                    <button class="bg-pink-500 text-white font-bold py-3 px-8 rounded-full hover:bg-pink-600 transition-all duration-300 transform hover:scale-105" onclick="calculateQuote()">Calcular Cotización</button>
+                </div>
+            </div>
+            
+            <!-- Quote Result Container -->
+            <div id="quote-result-container" class="quote-result-container bg-white rounded-2xl p-8 text-center hidden">
+                 <h2 class="font-playfair text-2xl mb-2">¡Aquí está tu cotización! ✨</h2>
+                 <p class="text-gray-500 mb-6">Revisa los detalles de tu diseño a continuación.</p>
+                 <div class="bg-pink-50 text-left p-6 rounded-lg border border-pink-200 space-y-3">
+                     <p><strong>Producto:</strong> <span id="quote-description"></span></p>
+                     <hr/>
+                     <p><strong>Costo de Elaboración:</strong> <span id="quote-cost" class="font-semibold"></span></p>
+                     <p class="text-lg"><strong>Precio de Venta Sugerido:</strong> <span id="quote-price" class="font-bold text-pink-600"></span></p>
+                 </div>
+                 <div id="quote-disclaimer" class="mt-4 text-sm text-gray-500"></div>
+                 <button id="whatsapp-quote-btn" class="mt-6 w-full max-w-xs mx-auto bg-green-500 text-white font-bold py-3 px-4 rounded-full hover:bg-green-600 transition-all duration-300 transform hover:scale-105">
+                    ¡Lo quiero! 🛍️ Enviar por WhatsApp
+                 </button>
+                 <button onclick="resetCalculator()" class="mt-4 text-sm text-gray-500 hover:text-pink-500">Cotizar otro producto</button>
+            </div>
+        </main>
+        
+        <!-- WhatsApp Floating Button -->
+        <a href="https://wa.me/56965863160?text=Hola%20Tati,%20necesito%20ayuda%20con%20un%20producto%20personalizado" target="_blank" class="group fixed bottom-8 right-8 rounded-full p-0 w-16 h-16 flex items-center justify-center shadow-lg transition-all duration-300 transform hover:scale-110 hover:shadow-xl animate-pulse-whatsapp">
+            <img src="img/wsp.png" alt="Contactar por WhatsApp" class="w-16 h-16">
+        </a>
+    </div>
+
+    <script>
+        let currentProduct = null;
+
+        function selectProduct(product) {
+            currentProduct = product;
+            // Style buttons
+            document.querySelectorAll('.product-btn').forEach(btn => btn.classList.remove('selected'));
+            event.target.classList.add('selected');
+            
+            // Show correct form
+            document.querySelectorAll('.form-section').forEach(form => form.classList.remove('active'));
+            document.getElementById(`${product}-form`).classList.add('active');
+            
+            // Show calculate button
+            document.getElementById('calculate-btn-container').classList.remove('hidden');
+        }
+
+        function togglePanquequeraInputs() {
+            const forma = document.getElementById('panquequera-forma').value;
+            document.getElementById('panquequera-redonda-inputs').classList.toggle('hidden', forma !== 'redonda');
+            document.getElementById('panquequera-rectangular-inputs').classList.toggle('hidden', forma !== 'rectangular');
+        }
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(value);
+        }
+
+        function calculateQuote() {
+            if (!currentProduct) return;
+            
+            let cost = 0;
+            let description = '';
+            let isExperimental = false;
+            
+            const v = (id) => parseFloat(document.getElementById(id).value) || 0;
+            const s = (id) => document.getElementById(id).value;
+
+            switch (currentProduct) {
+                case 'molde':
+                    const [l, w, h, espesor, tipo, div] = [v('molde-largo'), v('molde-ancho'), v('molde-alto'), v('molde-espesor'), s('molde-tipo'), v('molde-divisiones')];
+                    if(!l || !w || !h) { alert('Por favor, ingresa todas las dimensiones.'); return; }
+                    
+                    let precioBase = (tipo === 'desmontable') ? 30000 : 22500;
+                    let ajustePorTamano = (l * w > 600) ? ((l * w) - 600) * 5 : 0;
+                    let costoPorDivisiones = div * 1250;
+                    
+                    let costoBaseTotal = precioBase + ajustePorTamano + costoPorDivisiones;
+                    cost = (espesor == 1.5) ? costoBaseTotal * 1.25 : costoBaseTotal;
+                    description = `Molde ${tipo} de Aluminio (${l}x${w}x${h} cm, ${espesor}mm)${div > 0 ? `, ${div} divisiones` : ''}`;
+                    break;
+                
+                case 'panquequera':
+                    const forma = s('panquequera-forma');
+                    const esp = v('panquequera-espesor');
+                    let costoBasePan = 0;
+                    
+                    if (forma === 'redonda') {
+                        const diam = v('panquequera-diametro');
+                         if(!diam) { alert('Por favor, ingresa el diámetro.'); return; }
+                        costoBasePan = Math.max(2000, (625 * diam) - 4250);
+                        description = `Panquequera Redonda de Acrílico (Ø${diam} cm, ${esp}mm)`;
+                    } else {
+                        const [pl, pw] = [v('panquequera-largo'), v('panquequera-ancho')];
+                        if(!pl || !pw) { alert('Por favor, ingresa largo y ancho.'); return; }
+                        const diamEquiv = 2 * Math.sqrt((pl * pw) / Math.PI);
+                        costoBasePan = Math.max(2000, (625 * diamEquiv) - 4250);
+                        description = `Panquequera Rectangular de Acrílico (${pl}x${pw} cm, ${esp}mm)`;
+                    }
+                    cost = (esp == 3) ? costoBasePan * 1.4 : costoBasePan;
+                    break;
+
+                case 'varilla_placa':
+                    const tipoVP = s('vp-tipo');
+                    const [vpl, vpw, vpesp] = [v('vp-largo'), v('vp-ancho'), v('vp-espesor')];
+                    if(!vpl || !vpw) { alert('Por favor, ingresa largo y ancho.'); return; }
+                    let costoBaseVP = 0;
+
+                    if (tipoVP === 'varilla') {
+                        costoBaseVP = 2500 + (vpl * vpw * 0.5);
+                        description = `Varilla de Acrílico (${vpl}x${vpw} cm, ${vpesp}mm)`;
+                    } else {
+                        costoBaseVP = 1500 + (vpl * vpw * 2.5);
+                        description = `Placa de Acrílico (${vpl}x${vpw} cm, ${vpesp}mm)`;
+                    }
+                    cost = (vpesp == 3) ? costoBaseVP * 1.4 : costoBaseVP;
+                    break;
+                
+                case 'otro':
+                    isExperimental = true;
+                    const [mat, espOtro, ol, ow, comp] = [s('otro-material'), v('otro-espesor'), v('otro-largo'), v('otro-ancho'), v('otro-complejidad')];
+                    if(!ol || !ow || !espOtro) { alert('Por favor, ingresa todas las dimensiones y espesor.'); return; }
+
+                    let costoBaseMaterial = (mat === 'aluminio') ? (ol * ow) * 7.5 : (ol * ow) * 4.0;
+                    let costoBaseTotalOtro = costoBaseMaterial * comp;
+                    
+                    if (mat === 'aluminio' && espOtro == 1.5) cost = costoBaseTotalOtro * 1.25;
+                    else if (mat === 'acrilico' && espOtro == 3) cost = costoBaseTotalOtro * 1.4;
+                    else cost = costoBaseTotalOtro;
+
+                    description = `Diseño Personalizado en ${mat} (${ol}x${ow} cm, ${espOtro}mm)`;
+                    break;
+            }
+
+            const price = cost * 1.3;
+            displayQuote(description, cost, price, isExperimental);
+        }
+
+        function displayQuote(description, cost, price, isExperimental) {
+            document.getElementById('quote-description').textContent = description;
+            document.getElementById('quote-cost').textContent = formatCurrency(cost);
+            document.getElementById('quote-price').textContent = formatCurrency(price);
+            
+            const disclaimerEl = document.getElementById('quote-disclaimer');
+            if (isExperimental) {
+                disclaimerEl.textContent = 'Aviso: Este es un diseño experimental, la cotización es una referencia. ¡Pregúntale a Tati para confirmar el valor final!';
+                disclaimerEl.classList.remove('hidden');
+            } else {
+                disclaimerEl.textContent = '';
+                disclaimerEl.classList.add('hidden');
+            }
+
+            document.getElementById('form-container').classList.add('hidden');
+            document.getElementById('quote-result-container').classList.remove('hidden');
+
+            // Setup WhatsApp button
+            document.getElementById('whatsapp-quote-btn').onclick = () => {
+                const quoteText = `¡Hola Tati! ✨ Me gustaría encargar el producto cotizado:\n\n*Producto:* ${description}\n*Precio Sugerido:* ${formatCurrency(price)}`;
+                const whatsappUrl = `https://wa.me/56965863160?text=${encodeURIComponent(quoteText)}`;
+                window.open(whatsappUrl, '_blank');
+            };
+        }
+
+        function resetCalculator() {
+            document.getElementById('form-container').classList.remove('hidden');
+            document.getElementById('quote-result-container').classList.add('hidden');
+            document.querySelectorAll('.form-section').forEach(form => form.classList.remove('active'));
+            document.querySelectorAll('.product-btn').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById('calculate-btn-container').classList.add('hidden');
+            // Optional: reset form fields
+            document.querySelectorAll('input, select').forEach(el => {
+                if(el.type !== 'submit' && el.type !== 'button') el.value = '';
+            });
+        }
+    </script>
+</body>
+</html>
+
